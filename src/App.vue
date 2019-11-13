@@ -1,28 +1,28 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="kanbanApp">
+    <div class="tit_kanban">
+      <h1>히오의 칸반보드٩( ᐛ )و</h1>
+    </div>
+    <Kanban/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Kanban from './components/Kanban';
 
 export default {
-  name: 'app',
+  name: 'App',
+
   components: {
-    HelloWorld
-  }
-}
+    Kanban
+  },
+
+  data: () => ({
+    //
+  }),
+};
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss">
+  @import './assets/kanban.css';
 </style>
