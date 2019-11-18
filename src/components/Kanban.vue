@@ -1,23 +1,23 @@
 <template>
-  <div class="drag-container">
-    <ul class="drag-list">
-      <li v-for="stage in stages" class="drag-column" :class="{['drag-column-' + stage]: true}" :key="stage">
-        <span class="drag-column-header">
+  <div class="cont_kanban">
+    <ul class="list_kanban">
+      <li v-for="stage in stages" class="item_status" :class="{['item_status_' + stage]: true}" :key="stage">
+        <span class="tit_status">
           <slot :name="stage">
             <h2>{{ stage }}</h2>
           </slot>
         </span>
-        <div class="drag-options"></div>
-        <ul class="drag-inner-list" ref="list" :data-status="stage">
-          <li class="drag-item" v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
+        <div class="cont_item"></div>
+        <ul class="wrap_item" ref="list" :data-status="stage">
+          <li class="item_task" v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
             <slot :name="block.id">
               <strong>{{ block.status }}</strong>
               <div>{{ block.id }}</div>
             </slot>
           </li>
         </ul>
-        <div class="drag-column-footer">
-            <slot :name="`footer-${stage}`"></slot>
+        <div class="btn_addblock">
+            <slot :name="`footer_${stage}`"></slot>
         </div>
       </li>
     </ul>
@@ -58,22 +58,22 @@ export default {
     mounted() {
       this.drake = dragula(this.$refs.list)
         .on('drag', (el) => {
-          el.classList.add('is-moving');
+          el.classList.add('is_moving');
         })
         .on('drop', (block, list) => {
           let index = 0;
           for (index = 0; index < list.children.length; index += 1) {
-            if (list.children[index].classList.contains('is-moving')) break;
+            if (list.children[index].classList.contains('is_moving')) break;
           }
-          this.$emit('update-block', block.dataset.blockId, list.dataset.status, index);
+          this.$emit('update_block', block.dataset.blockId, list.dataset.status, index);
         })
         .on('dragend', (el) => {
-          el.classList.remove('is-moving');
+          el.classList.remove('is_moving');
 
           window.setTimeout(() => {
-            el.classList.add('is-moved');
+            el.classList.add('is_moved');
             window.setTimeout(() => {
-              el.classList.remove('is-moved');
+              el.classList.remove('is_moved');
             }, 600);
           }, 100);
         });

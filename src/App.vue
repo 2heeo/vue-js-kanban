@@ -1,3 +1,13 @@
+// TODO-heeo.
+// 1. 하단의 업무등록 버튼 따로 빼서 우측상단 input으로 데이터 받아오기(담당자,날짜,업무)
+// 2. 디데이 계산
+// 3. 담당자 썸네일
+// 4. 드래드드랍시 .item_task:after 색상 부분 처리
+// 5. 마크업 및 css 가이드화 및 필요없는 선언 삭제
+// 6. DONE 처리 css 추가
+// 7. dragula 클래스 수정 가능하다면 언더바적용
+// 8. 우측하단 일반 메모 추가
+
 <template>
   <div id="kanbanApp">
     <div class="tit_kanban">
@@ -11,15 +21,21 @@
         </h2>
       </div>
       <div v-for="item in blocks" :slot="item.id" :key="item.id">
+        <div class="cont_dday">
+          <strong class="txt_dday">D-<span class="txt_ddate">{{ item.dDay }}</span>
+          </strong>
+        </div>
         <div>
           <strong>id:</strong> {{ item.id }}
         </div>
         <div>
-          {{ item.title }}
+          <p><strong>담당자 : </strong>이히오</p>
+          <p><strong>기간 : </strong>2019.00.00 ~ 2019.00.00</p>
+          <p><strong>업무 : </strong>{{ item.title }}</p>
         </div>
       </div>
-      <div v-for="stage in statuses" :key="stage" :slot="`footer-${stage}`">
-          <a href="" @click.prevent="() => addBlock(stage)">+ Add new block</a>
+      <div v-for="stage in statuses" :key="stage" :slot="`footer_${stage}`">
+          <a href="" @click.prevent="() => addBlock(stage)">+ 업무 등록하기</a>
       </div>
     </Kanban>
   </div>
@@ -37,7 +53,7 @@ export default {
   },
   data() {
     return {
-      statuses: ['on-hold', 'in-progress', 'needs-review', 'approved'],
+      statuses: ['backlog', 'todo', 'doing', 'done'],
       blocks: [],
     };
   },
@@ -47,11 +63,19 @@ export default {
         id: i,
         status: this.statuses[Math.floor(Math.random() * 4)],
         title: faker.company.bs(),
+        dDay: this.countdate(),
       });
     }
   },
 
   methods: {
+    countdate: function() {
+      var countDate = faker.date.recent().getTime();
+      var currentDate = faker.date.recent().getTime();
+      var distance = countDate - currentDate;      
+      
+      return Math.floor(distance/(1000*60*60*24));
+    },
     updateBlock: debounce(function (id, status) {
       this.blocks.find(b => b.id === Number(id)).status = status;
     }, 500),
@@ -68,24 +92,4 @@ export default {
 
 <style lang="scss">
   @import './assets/kanban.css';
-</style>
-
-
-<style lang="scss">
-// 기존꺼
-* {box-sizing: border-box}
-body {background: #33363d;color: white;font-family: 'Lato';font-weight: 300;line-height: 1.5;-webkit-font-smoothing: antialiased}
-.drag-column .drag-column-header > div {width: 100%}
-.drag-column .drag-column-header > div h2 > a {float: right}
-.drag-column .drag-column-footer > div {margin-left: 10px}
-.drag-column .drag-column-footer > div a {text-decoration: none;color: white}
-.drag-column .drag-column-footer > div a:hover {text-decoration: underline}
-.drag-column-on-hold .drag-column-header, .drag-column-on-hold .is-moved, .drag-column-on-hold .drag-options {background: #fb7d44}
-.drag-column-in-progress .drag-column-header, .drag-column-in-progress .is-moved, .drag-column-in-progress .drag-options {background: #2a92bf}
-.drag-column-needs-review .drag-column-header, .drag-column-needs-review .is-moved, .drag-column-needs-review .drag-options {background: #f4ce46}
-.drag-column-approved .drag-column-header, .drag-column-approved .is-moved, .drag-column-approved .drag-options {background: #00b961}
-.section {padding: 20px;text-align: center}
-.section a {color: white;text-decoration: none;font-weight: 300}
-.section h4 {font-weight: 400}
-.section h4 a {font-weight: 600}
 </style>

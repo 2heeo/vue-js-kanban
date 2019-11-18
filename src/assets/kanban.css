@@ -14,36 +14,77 @@ a:active, a:hover{text-decoration:underline}
 a:active{background-color:transparent}
 address,caption,cite,code,dfn,em,var{font-style:normal;font-weight:normal}
 .screen_out{overflow:hidden;position:absolute;width:0;height:0;line-height:0;text-indent:-9999px}
+
 /* 칸반보드 */
 body{background:#33363d}
-#kanbanApp .tit_kanban{padding:15px;background:#000;text-align:center;color:#fff;font-weight:bold}
+#kanbanApp .tit_kanban{padding-top:20px;text-align:center;color:#fff}
+#kanbanApp .cont_kanban{overflow:hidden;margin:20px auto;max-width:1000px}
+
+/* 블록 */
+#kanbanApp .cont_dday{text-align:right;font-size:25px}
+#kanbanApp .txt_dday{color:#ff6347}
+#kanbanApp .txt_ddate{color:#000}
+
+
+
 
 /*기존꺼*/
-ul.drag-list, ul.drag-inner-list {list-style-type: none;margin: 0;padding: 0}
-.drag-container {max-width: 1000px;margin: 20px auto}
-.drag-list {display: flex;align-items: flex-start}
+/* #kanbanApp .list_kanban, ul.wrap_item {list-style-type:none;margin:0;padding:0} */
+#kanbanApp .list_kanban, ul.wrap_item{overflow:scroll}
+
+#kanbanApp .list_kanban {display:flex;align-items: flex-start}
 @media (max-width: 690px) {
-.drag-list {
+  #kanbanApp .list_kanban {
   display: block;
  }
 }
-.drag-column {flex: 1;margin: 0 10px;position: relative;background: rgba(0, 0, 0, 0.2);overflow: hidden}
+#kanbanApp .item_status {overflow:hidden;position:relative;flex:1}
 @media (max-width: 690px) {
-  .drag-column {
+  #kanbanApp .item_status {
     margin-bottom: 30px;
  }
 }
-.drag-column h2 {font-size: 0.8rem;margin: 0;text-transform: uppercase;font-weight: 600}
-.drag-column-header {display: flex;align-items: center;justify-content: space-between;padding: 10px}
-.drag-inner-list {min-height: 50px;color: white}
-.drag-item {padding: 10px;margin: 10px;height: 100px;background: rgba(0, 0, 0, 0.4);transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1)}
-.drag-item.is-moving {transform: scale(1.5);background: rgba(0, 0, 0, 0.8)}
-.drag-header-more {cursor: pointer}
-.drag-options {position: absolute;top: 44px;left: 0;width: 100%;height: 100%;padding: 10px;transform: translateX(100%);opacity: 0;transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1)}
-.drag-options.active {transform: translateX(0);opacity: 1}
-.drag-options-label {display: block;margin: 0 0 5px 0}
-.drag-options-label input {opacity: 0.6}
-.drag-options-label span {display: inline-block;font-size: 0.9rem;font-weight: 400;margin-left: 5px}
+#kanbanApp .list_kanban li:first-child .wrap_item{border-left:1px solid #dadada}
+#kanbanApp .list_kanban li:last-child .wrap_item{border-right:1px solid #dadada}
+#kanbanApp .item_status h2{margin:0;text-align:center;text-transform: uppercase;font-weight:bold}
+#kanbanApp .tit_status{display:flex;align-items: center;justify-content: space-between;padding:10px}
+.wrap_item{overflow:hidden;height:700px;border-bottom:1px solid #dadada;border-top:0 none;border-right:1px dashed #dadada;color:#000}
+
+/* .wrap_item li:first-child{margin-top:0;} */
+.item_task{position:relative;height:150px;margin:20px;padding:20px;background:#fff;transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1)}
+.item_task + .item_task{margin-top:40px}
+.item_task:after{position:absolute;bottom:-20px;left:0;right:20px;border:20px solid #fff;content:""}
+.item_task:before{position:absolute;bottom:-20px;right:0;border-width:20px 20px 0 0;border-style:solid;border-color:#dadada transparent;content:""}
+
+
+
+#kanbanApp .item_task.is_moving {transform: scale(1.5);background: rgba(0, 0, 0, 0.8)}
+#kanbanApp .drag_header_more {cursor: pointer}
+#kanbanApp .cont_item {position: absolute;top: 44px;left: 0;width: 100%;height: 100%;padding: 10px;transform: translateX(100%);opacity: 0;transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1)}
+#kanbanApp .cont_item.active {transform: translateX(0);opacity: 1}
+#kanbanApp .cont_item {display: block;margin: 0 0 5px 0}
+#kanbanApp .cont_item input {opacity:0.6}
+#kanbanApp .cont_item span {display:inline-block;font-size: 0.9rem;font-weight: 400;margin-left: 5px}
+
+#kanbanApp .item_status .tit_status > div {width:100%}
+#kanbanApp .item_status .tit_status > div h2 > a {float:right}
+#kanbanApp .item_status .btn_addblock > div a {display:block;padding:15px 0;border-bottom:1px solid #fff;border-left:1px solid #fff;font-size:17px;color:white;text-align:center;box-sizing:border-box}
+#kanbanApp .list_kanban li:last-child .btn_addblock > div a{border-right:1px solid #fff}
+#kanbanApp .item_status_backlog .tit_status, .item_status_backlog .is_moved, .item_status_backlog .cont_item{background:#f4ce46}
+#kanbanApp .item_status_todo .tit_status, .item_status_todo .is_moved, .item_status_to-do .cont_item{background: #2a92bf}
+#kanbanApp .item_status_doing .tit_status, .item_status_doing .is_moved, .item_status_doing .cont_item{background: #fb7d44}
+#kanbanApp .item_status_done .tit_status, .item_status_done .is_moved, .item_status_done .cont_item{background: #00b961}
+
+#kanbanApp .item_status_backlog .is_moving:after{border-color: #f4ce46}
+#kanbanApp .item_status_todo .is_moving:after{border-color: #2a92bf}
+#kanbanApp .item_status_doing .is_moving:after{border-color: #fb7d44}
+#kanbanApp .item_status_done .is_moving:after{border-color: #00b961}
+
+#kanbanApp .item_status_backlog .is_moved:after{border-color: #f4ce46}
+#kanbanApp .item_status_todo .is_moved:after{border-color: #2a92bf}
+#kanbanApp .item_status_doing .is_moved:after{border-color: #fb7d44}
+#kanbanApp .item_status_done .is_moved:after{border-color: #00b961}
+
 /* Dragula CSS */
 .gu-mirror {position: fixed !important;margin: 0 !important;z-index: 9999 !important;opacity: 0.8;list-style-type: none}
 .gu-hide {display: none !important}
