@@ -6,7 +6,6 @@
 // 5. 마크업 및 css 가이드화 및 필요없는 선언 삭제
 // 6. DONE 처리 css 추가
 // 7. dragula 클래스 수정 가능하다면 언더바적용
-// 8. 우측하단 일반 메모 추가
 
 <template>
   <div id="kanbanApp">
@@ -15,10 +14,7 @@
     </div>
     <Kanban :stages="statuses" :blocks="blocks" @update-block="updateBlock">
       <div v-for="stage in statuses" :slot="stage" :key="stage">
-        <h2>
-          {{ stage }}
-          <a>+</a>
-        </h2>
+        <h2>{{ stage }}</h2>
       </div>
       <div v-for="item in blocks" :slot="item.id" :key="item.id">
         <div class="cont_dday">
@@ -38,6 +34,32 @@
           <a href="" @click.prevent="() => addBlock(stage)">+ 업무 등록하기</a>
       </div>
     </Kanban>
+    <div class="cont_boxetc">
+      <div class="">
+        <h2 class="tit_input">Add Task</h2>
+        <div>
+
+        </div>
+      </div>
+      <div class="cont_memo">
+        <h2 class="tit_memobox">MEMO</h2>
+        <input type="text" class="input_memo" v-model="memoInput" @keyup.enter="addNewMemo" placeholder="메모 내용">      
+        <div class="list_memo">
+          <template v-for="memo in activeMemoList">
+            <memo
+              :label="memo.label" v-bind:key="memo"
+              @componentClick="toggleMemoState(memo)"
+              />
+          </template>      
+        </div>
+        <div class="cont_btntype">
+          <span class="desc_btntype">보기 방식 : </span>
+          <button type="button" @click="changeCurrentState('active')" class="btn_viewtype" :class="{on:selected === 'active'}" >할 일</button>
+          <button type="button" @click="changeCurrentState('done')" class="btn_viewtype" :class="{on:selected === 'done'}">완료</button>
+          <button type="button" @click="changeCurrentState('all')" class="btn_viewtype" :class="{on:selected === 'all'}">전체</button>
+        </div>    
+      </div>
+    </div>
   </div>
 </template>
 
@@ -45,18 +67,27 @@
 import faker from 'faker';
 import { debounce } from 'lodash';
 import Kanban from './components/Kanban';
+import Memo from './components/Memo'
 
 export default {
   name: 'app',
   components: {
     Kanban,
+    Memo
   },
   data() {
     return {
+      // 칸반
       statuses: ['backlog', 'todo', 'doing', 'done'],
       blocks: [],
+      // 메모
+      memoInput:'',
+      memoList: [],
+      currentState: 'active',
+      selected: undefined
     };
   },
+
   mounted() {
     for (let i = 0; i <= 10; i += 1) {
       this.blocks.push({
@@ -65,6 +96,12 @@ export default {
         title: faker.company.bs(),
         dDay: this.countdate(),
       });
+    }
+  },
+
+  computed: {
+    activeMemoList() {
+      return this.memoList.filter(memo => this.currentState === 'all' || memo.state === this.currentState);
     }
   },
 
@@ -86,7 +123,21 @@ export default {
         title: faker.company.bs(),
       });
     }, 500),
-  },
+
+    changeCurrentState(state) {
+      this.currentState = state;
+    },
+    addNewMemo() {
+      this.memoList.push({
+        label: this.memoInput,
+        state: 'active'
+        });
+      this.memoInput = '';
+    },
+    toggleMemoState(memo) {
+        memo.state = memo.state === 'active' ? 'done' : 'active';
+    }
+  }
 };
 </script>
 
