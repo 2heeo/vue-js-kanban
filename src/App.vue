@@ -22,9 +22,6 @@
           </strong>
         </div>
         <div>
-          <strong>id:</strong> {{ item.id }}
-        </div>
-        <div>
           <p><strong>담당자 : </strong>이히오</p>
           <p><strong>기간 : </strong>2019.00.00 ~ 2019.00.00</p>
           <p><strong>업무 : </strong>{{ item.title }}</p>
@@ -35,11 +32,13 @@
       </div>
     </Kanban>
     <div class="cont_boxetc">
-      <div class="">
+      <div class="cont_input">
         <h2 class="tit_input">Add Task</h2>
-        <div>
-
-        </div>
+        <input type="text" class="input_name" v-model="nameInput" placeholder="담당자">      
+        <input type="date" class="input_startdate" v-model="startDateInput" placeholder="시작 날짜">      
+        <input type="date" class="input_enddate" v-model="endDateInput" placeholder="종료 날짜">      
+        <input type="text" class="input_task" v-model="taskInput" placeholder="업무 내용">      
+        <button type="button" class="btn_addtask">등록 하기</button>
       </div>
       <div class="cont_memo">
         <h2 class="tit_memobox">MEMO</h2>
@@ -54,9 +53,10 @@
         </div>
         <div class="cont_btntype">
           <span class="desc_btntype">보기 방식 : </span>
-          <button type="button" @click="changeCurrentState('active')" class="btn_viewtype" :class="{on:selected === 'active'}" >할 일</button>
-          <button type="button" @click="changeCurrentState('done')" class="btn_viewtype" :class="{on:selected === 'done'}">완료</button>
-          <button type="button" @click="changeCurrentState('all')" class="btn_viewtype" :class="{on:selected === 'all'}">전체</button>
+          <button type="button" @click="changeCurrentState('active')" class="btn_viewtype" :class="{on:currentState === 'active'}" >할 일</button>
+          <button type="button" @click="changeCurrentState('done')" class="btn_viewtype" :class="{on:currentState === 'done'}">완료</button>
+          <button type="button" @click="changeCurrentState('all')" class="btn_viewtype" :class="{on:currentState === 'all'}">전체</button>
+          <p class="desc_memo">* 클릭하면 완료/완료 취소 처리됨 *</p>
         </div>    
       </div>
     </div>
