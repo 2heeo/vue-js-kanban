@@ -1,11 +1,10 @@
 // TODO-heeo.
-// 1. 하단의 업무등록 버튼 따로 빼서 우측상단 input으로 데이터 받아오기(담당자,날짜,업무)
-// 2. 디데이 계산
-// 3. 담당자 썸네일
-// 4. 드래드드랍시 .item_task:after 색상 부분 처리
-// 5. 마크업 및 css 가이드화 및 필요없는 선언 삭제
-// 6. DONE 처리 css 추가
-// 7. dragula 클래스 수정 가능하다면 언더바적용
+// 1. 담당자 썸네일
+// 2. 드래드드랍시 .item_task:after 색상 부분 처리
+// 3. 마크업 및 css 가이드화 및 필요없는 선언 삭제
+// 4. DONE 처리 css 추가
+// 5. dragula 클래스 수정 가능하다면 언더바적용
+// 6. 필요없는 코드 삭제
 
 <template>
   <div id="kanbanApp">
@@ -22,13 +21,10 @@
           </strong>
         </div>
         <div>
-          <p><strong>담당자 : </strong>이히오</p>
-          <p><strong>기간 : </strong>2019.00.00 ~ 2019.00.00</p>
-          <p><strong>업무 : </strong>{{ item.title }}</p>
+          <p><strong>담당자 : </strong>{{ item.name }}</p>
+          <p><strong>기간 : </strong>{{ item.startDate }} ~ {{ item.endDate }}</p>
+          <p><strong>업무 : </strong>{{ item.task }}</p>
         </div>
-      </div>
-      <div v-for="stage in statuses" :key="stage" :slot="`footer_${stage}`">
-          <a href="" @click.prevent="() => addBlock(stage)">+ 업무 등록하기</a>
       </div>
     </Kanban>
     <div class="cont_boxetc">
@@ -38,7 +34,7 @@
         <input type="date" class="input_startdate" v-model="startDateInput" placeholder="시작 날짜">      
         <input type="date" class="input_enddate" v-model="endDateInput" placeholder="종료 날짜">      
         <input type="text" class="input_task" v-model="taskInput" placeholder="업무 내용">      
-        <button type="button" class="btn_addtask">등록 하기</button>
+        <button type="button" class="btn_addtask" @click.prevent="() => addBlock()">등록 하기</button>
       </div>
       <div class="cont_memo">
         <h2 class="tit_memobox">MEMO</h2>
@@ -64,7 +60,6 @@
 </template>
 
 <script>
-import faker from 'faker';
 import { debounce } from 'lodash';
 import Kanban from './components/Kanban';
 import Memo from './components/Memo'
@@ -80,6 +75,11 @@ export default {
       // 칸반
       statuses: ['backlog', 'todo', 'doing', 'done'],
       blocks: [],
+      nameInput: '',
+      startDateInput: '',
+      endDateInput: '',
+      taskInput:'',
+      dDay: '',
       // 메모
       memoInput:'',
       memoList: [],
@@ -88,15 +88,19 @@ export default {
     };
   },
 
+  // init(기존 faker를 사용해서 처음 가짜 데이터로 셋팅하는 부분) -> 추후 로컬 스토리지 사용 할 것
   mounted() {
-    for (let i = 0; i <= 10; i += 1) {
-      this.blocks.push({
-        id: i,
-        status: this.statuses[Math.floor(Math.random() * 4)],
-        title: faker.company.bs(),
-        dDay: this.countdate(),
-      });
-    }
+    // for (let i = 0; i <= 10; i += 1) {
+    //   this.blocks.push({
+    //     id: i,
+    //     name: '',
+    //     startDate: '',
+    //     endDate: '',
+    //     task: '',
+    //     status: '',
+    //     dDay: this.countdate(),
+    //   });
+    // }
   },
 
   computed: {
@@ -106,24 +110,32 @@ export default {
   },
 
   methods: {
-    countdate: function() {
-      var countDate = faker.date.recent().getTime();
-      var currentDate = faker.date.recent().getTime();
-      var distance = countDate - currentDate;      
-      
-      return Math.floor(distance/(1000*60*60*24));
+    countdate: function(endDate) {
+      var nowDate = new Date().getTime();
+      endDate = new Date(endDate).getTime();
+      const distance = nowDate - endDate;
+      return Math.floor(distance/(1000*60*60*24)) * -1;
     },
     updateBlock: debounce(function (id, status) {
       this.blocks.find(b => b.id === Number(id)).status = status;
     }, 500),
-    addBlock: debounce(function (stage) {
+    addBlock: debounce(function () {
       this.blocks.push({
         id: this.blocks.length,
-        status: stage,
-        title: faker.company.bs(),
+        name: this.nameInput,
+        startDate: this.startDateInput,
+        endDate: this.endDateInput,
+        task: this.taskInput,
+        dDay: this.countdate(this.endDateInput),
+        status: 'todo',
       });
+      this.nameInput = '',
+      this.startDateInput = '',
+      this.endDateInput = '',
+      this.taskInput = ''
     }, 500),
 
+    // 메모
     changeCurrentState(state) {
       this.currentState = state;
     },
