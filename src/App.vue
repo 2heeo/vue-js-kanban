@@ -38,7 +38,7 @@
       </div>
       <div class="cont_memo">
         <h2 class="tit_memobox">MEMO</h2>
-        <input type="text" class="input_memo" v-model="memoInput" @keyup.enter="addNewMemo" placeholder="메모 내용">      
+        <input type="text" class="input_memo" v-model="memoInput" @keypress.enter="addNewMemo" placeholder="메모 내용">      
         <div class="list_memo">
           <memo v-for="(memo, index) in activeMemoList"
             :label="memo.label" v-bind:key="index"
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+/* eslint no-console: "off" */
 import { debounce } from 'lodash';
 import Kanban from './components/Kanban';
 import Memo from './components/Memo'
@@ -140,6 +141,7 @@ export default {
       this.currentState = state;
     },
     addNewMemo() {
+      console.log(this.memoInput);
       this.memoList.push({
         label: this.memoInput,
         state: 'active'
