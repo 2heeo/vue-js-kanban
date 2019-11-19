@@ -40,12 +40,10 @@
         <h2 class="tit_memobox">MEMO</h2>
         <input type="text" class="input_memo" v-model="memoInput" @keyup.enter="addNewMemo" placeholder="메모 내용">      
         <div class="list_memo">
-          <template v-for="memo in activeMemoList">
-            <memo
-              :label="memo.label" v-bind:key="memo"
-              @componentClick="toggleMemoState(memo)"
-              />
-          </template>      
+          <memo v-for="(memo, index) in activeMemoList"
+            :label="memo.label" v-bind:key="index"
+            @componentClick="toggleMemoState(memo)"
+            />
         </div>
         <div class="cont_btntype">
           <span class="desc_btntype">보기 방식 : </span>
@@ -104,12 +102,14 @@ export default {
   },
 
   computed: {
+    // 메모
     activeMemoList() {
       return this.memoList.filter(memo => this.currentState === 'all' || memo.state === this.currentState);
     }
   },
 
   methods: {
+    // 칸반
     countdate: function(endDate) {
       var nowDate = new Date().getTime();
       endDate = new Date(endDate).getTime();
