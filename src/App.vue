@@ -4,7 +4,9 @@
 // 4. DONE 처리 css 추가
 // 5. dragula 클래스 수정 가능하다면 언더바적용
 // 6. 필요없는 코드 삭제
-// 7. 로컬스토리지
+// 7. 메모 영역 높이 고정 및 스크롤 추가
+// 8. 메모, 블록 등 말줄임
+// 9. 새로 고침했을때 status 불러오기
 
 <template>
   <div id="kanbanApp">
@@ -87,8 +89,21 @@ export default {
     };
   },
 
-  // init(기존 faker를 사용해서 처음 가짜 데이터로 셋팅하는 부분) -> 추후 로컬 스토리지 사용 할 것
   mounted() {
+    const blocks = localStorage.getItem('blocks');
+    const memoList = localStorage.getItem('memoList');
+
+    if (!blocks) {
+      this.blocks = [];
+    } else {
+      this.blocks = JSON.parse(blocks);
+    }
+
+    if(!memoList) {
+      this.memoList = [];
+    } else {
+      this.memoList = JSON.parse(memoList);
+    }
   },
 
   computed: {
@@ -101,14 +116,12 @@ export default {
   methods: {
     // 칸반
     countdate: function(endDate) {
-      var nowDate = new Date().getTime();
-      endDate = new Date(endDate).getTime();
-      const distance = nowDate - endDate;
-      return Math.floor(distance/(1000*60*60*24)) * -1;
+      const nowDate = new Date().getTime();
+      endDate = endDate === '' ? '' : new Date(endDate).getTime();
+      const distance = endDate === '' ? '미정' : Math.floor((nowDate - endDate)/(1000*60*60*24)) * -1;
+      
+      return distance;
     },
-    updateBlock: debounce(function (id, status) {
-      this.blocks.find(b => b.id === Number(id)).status = status;
-    }, 500),
     addBlock: debounce(function () {
       this.blocks.push({
         id: this.blocks.length,
@@ -119,26 +132,39 @@ export default {
         dDay: this.countdate(this.endDateInput),
         status: 'todo',
       });
+
       this.nameInput = '',
       this.startDateInput = '',
       this.endDateInput = '',
       this.taskInput = ''
-    }, 500),
 
+      this.saveStorage('blocks', this.blocks);
+    }, 500),
+    updateBlock: debounce(function (id, status) {
+      this.blocks.find(b => b.id === Number(id)).status = status;      
+    }, 500),
+    
     // 메모
-    changeCurrentState(state) {
-      this.currentState = state;
-    },
     addNewMemo() {
-      console.log(this.memoInput);
       this.memoList.push({
         label: this.memoInput,
         state: 'active'
         });
       this.memoInput = '';
+
+      this.saveStorage('memoList', this.memoList);
+    },
+    changeCurrentState(state) {
+      this.currentState = state;
     },
     toggleMemoState(memo) {
-        memo.state = memo.state === 'active' ? 'done' : 'active';
+      memo.state = memo.state === 'active' ? 'done' : 'active';
+    },
+
+    // 공통
+    saveStorage: function(key, data) {
+      const currentBlocks = JSON.stringify(data);
+      localStorage.setItem(key, currentBlocks);
     }
   }
 };
