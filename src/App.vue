@@ -1,17 +1,17 @@
 // TODO-heeo.
 // 1. 담당자 썸네일
-// 2. 드래드드랍시 .item_task:after 색상 부분 처리
 // 3. 마크업 및 css 가이드화 및 필요없는 선언 삭제
 // 4. DONE 처리 css 추가
 // 5. dragula 클래스 수정 가능하다면 언더바적용
 // 6. 필요없는 코드 삭제
+// 7. 로컬스토리지
 
 <template>
   <div id="kanbanApp">
     <div class="tit_kanban">
       <h1>히오의 칸반보드٩( ᐛ )و</h1>
     </div>
-    <Kanban :stages="statuses" :blocks="blocks" @update-block="updateBlock">
+    <Kanban :stages="statuses" :blocks="blocks" @update-block="updateBlock()">
       <div v-for="stage in statuses" :slot="stage" :key="stage">
         <h2>{{ stage }}</h2>
       </div>
@@ -38,7 +38,7 @@
       </div>
       <div class="cont_memo">
         <h2 class="tit_memobox">MEMO</h2>
-        <input type="text" class="input_memo" v-model="memoInput" @keypress.enter="addNewMemo" placeholder="메모 내용">      
+        <input type="text" class="input_memo" v-model="memoInput" @keypress.enter="addNewMemo()" placeholder="메모 내용">      
         <div class="list_memo">
           <memo v-for="(memo, index) in activeMemoList"
             :label="memo.label" v-bind:key="index"
@@ -89,17 +89,6 @@ export default {
 
   // init(기존 faker를 사용해서 처음 가짜 데이터로 셋팅하는 부분) -> 추후 로컬 스토리지 사용 할 것
   mounted() {
-    // for (let i = 0; i <= 10; i += 1) {
-    //   this.blocks.push({
-    //     id: i,
-    //     name: '',
-    //     startDate: '',
-    //     endDate: '',
-    //     task: '',
-    //     status: '',
-    //     dDay: this.countdate(),
-    //   });
-    // }
   },
 
   computed: {
