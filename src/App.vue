@@ -1,12 +1,3 @@
-// TODO-heeo.
-// 1. 담당자 썸네일
-// 3. 마크업 및 css 가이드화 및 필요없는 선언 삭제
-// 4. DONE 처리 css 추가
-// 5. dragula 클래스 수정 가능하다면 언더바적용
-// 6. 필요없는 코드 삭제
-// 7. 메모 영역 높이 고정 및 스크롤 추가
-// 8. 메모, 블록 등 말줄임
-
 <template>
   <div id="kanbanApp">
     <div class="tit_kanban">
@@ -60,7 +51,6 @@
 
 <script>
 /* eslint no-console: "off" */
-import { debounce } from 'lodash';
 import Kanban from './components/Kanban';
 import Memo from './components/Memo'
 
@@ -122,7 +112,7 @@ export default {
       return distance;
     },
 
-    addBlock: debounce(function () {
+    addBlock: function () {
       this.blocks.push({
         id: this.blocks.length,
         name: this.nameInput,
@@ -139,22 +129,17 @@ export default {
       this.taskInput = ''
 
       this.saveStorage('blocks', this.blocks);
-    }, 500),
+    },
 
-     updateBlockStatus: debounce(function (id, status) {
+     updateBlockStatus: function (id, status) {
       this.blocks.find(b => b.id === Number(id)).status = status;
-    }, 500),
+    },
 
-    onUpdateBlock: function(id, status) { //이게 블록 옮기면 실행될 애
-      this.updateBlockStatus(id, status);
+    onUpdateBlock: function(id, status) {
       id = Number(id);
-      for(let i=0; i < this.blocks.length; i++) {
-        if(i === id) {          
-          this.blocks[i].status = status;
-          break;
-        }
-      }
-      localStorage.setItem('blocks', JSON.stringify(this.blocks));
+      this.updateBlockStatus(id, status);
+      const updatedBlock = this.blocks.find(b => b.id === id);
+      this.updateStorage(id, updatedBlock, 'blocks', this.blocks);
     },
     
     // 메모
@@ -176,19 +161,24 @@ export default {
     toggleMemoState(memo) {
       memo.state = memo.state === 'active' ? 'done' : 'active';
       
-      for(let i=0; i <  this.memoList.length; i++) {
-        if(i === memo.id) {
-          this.memoList[i].state = memo.state;
-          break;
-        }
-      }
-      localStorage.setItem('memoList', JSON.stringify(this.memoList));
+      const updatedMemo = this.memoList.find(m => m.id === memo.id);
+      this.updateStorage(memo.id, updatedMemo, 'memoList', this.memoList);
     },
 
     // 공통
     saveStorage: function(key, data) {
       const currentBlocks = JSON.stringify(data);
       localStorage.setItem(key, currentBlocks);
+    },
+    updateStorage: function(id, item, key, data) {
+      for(let i = 0; i < data.length; i++) {
+          if(i === id) {                    
+          data[i] = item;
+          break;
+        }
+      }
+      const stringifyData = JSON.stringify(Array.from(data));
+      localStorage.setItem(key, stringifyData);
     }
   }
 };
@@ -197,3 +187,4 @@ export default {
 <style lang="scss">
   @import './assets/kanban.css';
 </style>
+
