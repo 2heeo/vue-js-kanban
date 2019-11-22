@@ -66,18 +66,17 @@ export default {
           for (index = 0; index < list.children.length; index += 1) {
             if (list.children[index].classList.contains('is_moving')) break;
           }
-          this.$emit('updateBlock', block.dataset.blockId, list.dataset.status, index);
-        })
-        .on('dragend', (el) => {
-          el.classList.remove('is_moving');
+          
+          block.classList.remove('is_moving');
 
           window.setTimeout(() => {
-            el.classList.add('is_moved');
+            block.classList.add('is_moved');
             window.setTimeout(() => {
-              el.classList.remove('is_moved');
+              block.classList.remove('is_moved');
+              this.$emit('updateBlock', block.dataset.blockId, list.dataset.status);
             }, 600);
           }, 100);
-        });
+        })
     }
 };
 </script>

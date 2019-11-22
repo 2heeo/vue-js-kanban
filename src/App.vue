@@ -26,7 +26,7 @@
         <input type="date" class="input_startdate" v-model="startDateInput" placeholder="시작 날짜">      
         <input type="date" class="input_enddate" v-model="endDateInput" placeholder="종료 날짜">      
         <input type="text" class="input_task" v-model="taskInput" placeholder="업무 내용">      
-        <button type="button" class="btn_addtask" @click.prevent="() => addBlock()">등록 하기</button>
+        <button type="button" class="btn_addtask" @click.prevent="() => addBlock">등록 하기</button>
       </div>
       <div class="cont_memo">
         <h2 class="tit_memobox">MEMO</h2>
@@ -52,7 +52,8 @@
 <script>
 /* eslint no-console: "off" */
 import Kanban from './components/Kanban';
-import Memo from './components/Memo'
+import Memo from './components/Memo';
+// import lodash from 'lodash';
 
 export default {
   name: 'app',
