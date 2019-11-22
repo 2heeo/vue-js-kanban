@@ -6,14 +6,13 @@
 // 6. 필요없는 코드 삭제
 // 7. 메모 영역 높이 고정 및 스크롤 추가
 // 8. 메모, 블록 등 말줄임
-// 9. 새로 고침했을때 status 불러오기
 
 <template>
   <div id="kanbanApp">
     <div class="tit_kanban">
       <h1>히오의 칸반보드٩( ᐛ )و</h1>
     </div>
-    <Kanban :stages="statuses" :blocks="blocks" @update-block="updateBlock()">
+    <Kanban :stages="statuses" :blocks="blocks" @updateBlock="onUpdateBlock">
       <div v-for="stage in statuses" :slot="stage" :key="stage">
         <h2>{{ stage }}</h2>
       </div>
@@ -71,6 +70,7 @@ export default {
     Kanban,
     Memo
   },
+
   data() {
     return {
       // 칸반
@@ -84,8 +84,7 @@ export default {
       // 메모
       memoInput:'',
       memoList: [],
-      currentState: 'active',
-      selected: undefined
+      currentState: 'active'
     };
   },
 
@@ -122,6 +121,7 @@ export default {
       
       return distance;
     },
+
     addBlock: debounce(function () {
       this.blocks.push({
         id: this.blocks.length,
@@ -140,25 +140,49 @@ export default {
 
       this.saveStorage('blocks', this.blocks);
     }, 500),
-    updateBlock: debounce(function (id, status) {
-      this.blocks.find(b => b.id === Number(id)).status = status;      
+
+     updateBlockStatus: debounce(function (id, status) {
+      this.blocks.find(b => b.id === Number(id)).status = status;
     }, 500),
+
+    onUpdateBlock: function(id, status) { //이게 블록 옮기면 실행될 애
+      this.updateBlockStatus(id, status);
+      id = Number(id);
+      for(let i=0; i < this.blocks.length; i++) {
+        if(i === id) {          
+          this.blocks[i].status = status;
+          break;
+        }
+      }
+      localStorage.setItem('blocks', JSON.stringify(this.blocks));
+    },
     
     // 메모
     addNewMemo() {
       this.memoList.push({
+        id: this.memoList.length,
         label: this.memoInput,
         state: 'active'
         });
       this.memoInput = '';
-
+ 
       this.saveStorage('memoList', this.memoList);
     },
+
     changeCurrentState(state) {
       this.currentState = state;
     },
+
     toggleMemoState(memo) {
       memo.state = memo.state === 'active' ? 'done' : 'active';
+      
+      for(let i=0; i <  this.memoList.length; i++) {
+        if(i === memo.id) {
+          this.memoList[i].state = memo.state;
+          break;
+        }
+      }
+      localStorage.setItem('memoList', JSON.stringify(this.memoList));
     },
 
     // 공통

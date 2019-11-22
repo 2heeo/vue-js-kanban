@@ -25,6 +25,7 @@
 </template>
 
 <script>
+/* eslint no-console: "off" */
 import dragula from 'dragula';
 
 export default {
@@ -65,7 +66,7 @@ export default {
           for (index = 0; index < list.children.length; index += 1) {
             if (list.children[index].classList.contains('is_moving')) break;
           }
-          this.$emit('update_block', block.dataset.blockId, list.dataset.status, index);
+          this.$emit('updateBlock', block.dataset.blockId, list.dataset.status, index);
         })
         .on('dragend', (el) => {
           el.classList.remove('is_moving');
