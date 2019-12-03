@@ -12,30 +12,36 @@
           <strong class="txt_dday">D-<span class="txt_ddate">{{ item.dDay }}</span>
           </strong>
         </div>
-        <div>
-          <p><strong>담당자 : </strong>{{ item.name }}</p>
-          <p><strong>기간 : </strong>{{ item.startDate }} ~ {{ item.endDate }}</p>
-          <p><strong>업무 : </strong>{{ item.task }}</p>
+        <div class="cont_txt_task">
+          <p class="txt_name">{{ item.name }}</p>
+          <p class="txt_duedate">{{ item.startDate }} ~ {{ item.endDate }}</p>
+          <p class="txt_task">{{ item.task }}</p>
+          <div class="cont_task_btns">
+            <button type="button" class="btn_edit_task">수정</button>
+            <button type="button" class="btn_delete_task" @click.prevent="() => deleteBlock(item.id)">삭제</button>
+          </div>
         </div>
       </div>
     </Kanban>
     <div class="cont_boxetc">
-      <div class="cont_input">
+      <div class="cont_taskbox">
         <h2 class="tit_input">Add Task</h2>
         <input type="text" class="input_name" v-model="nameInput" placeholder="담당자">      
         <input type="date" class="input_startdate" v-model="startDateInput" placeholder="시작 날짜">      
         <input type="date" class="input_enddate" v-model="endDateInput" placeholder="종료 날짜">      
         <input type="text" class="input_task" v-model="taskInput" placeholder="업무 내용">      
-        <button type="button" class="btn_addtask" @click.prevent="() => addBlock">등록 하기</button>
+        <button type="button" class="btn_addtask" @click.prevent="() => addBlock()">등록 하기</button>
       </div>
-      <div class="cont_memo">
+      <div class="cont_memobox">
         <h2 class="tit_memobox">MEMO</h2>
-        <input type="text" class="input_memo" v-model="memoInput" @keypress.enter="addNewMemo()" placeholder="메모 내용">      
+        <input type="text" class="input_memo" v-model="memoInput" @keypress.enter="addNewMemo()" placeholder="메모 내용 입력">      
         <div class="list_memo">
           <memo v-for="(memo, index) in activeMemoList"
             :label="memo.label" v-bind:key="index"
             @componentClick="toggleMemoState(memo)"
-            />
+            @editBtnClick="editMemo(index)"
+            @deleteBtnClick="deleteMemo(index)"
+          />
         </div>
         <div class="cont_btntype">
           <span class="desc_btntype">보기 방식 : </span>
@@ -53,7 +59,6 @@
 /* eslint no-console: "off" */
 import Kanban from './components/Kanban';
 import Memo from './components/Memo';
-// import lodash from 'lodash';
 
 export default {
   name: 'app',
@@ -142,6 +147,11 @@ export default {
       const updatedBlock = this.blocks.find(b => b.id === id);
       this.updateStorage(id, updatedBlock, 'blocks', this.blocks);
     },
+
+    deleteBlock: function(id) {
+      this.blocks.pop(this.blocks[id]);
+      this.saveStorage('blocks', this.blocks);
+    },
     
     // 메모
     addNewMemo() {
@@ -152,6 +162,16 @@ export default {
         });
       this.memoInput = '';
  
+      this.saveStorage('memoList', this.memoList);
+    },
+
+    editMemo() {
+      console.log('개발중');
+    },
+
+    deleteMemo(index) {
+      console.log(index);
+      this.memoList.pop(this.memoList[index]);
       this.saveStorage('memoList', this.memoList);
     },
 
@@ -168,8 +188,8 @@ export default {
 
     // 공통
     saveStorage: function(key, data) {
-      const currentBlocks = JSON.stringify(data);
-      localStorage.setItem(key, currentBlocks);
+      const currentList = JSON.stringify(data);
+      localStorage.setItem(key, currentList);
     },
     updateStorage: function(id, item, key, data) {
       for(let i = 0; i < data.length; i++) {
@@ -185,7 +205,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style>
   @import './assets/kanban.css';
 </style>
 

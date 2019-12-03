@@ -1,7 +1,13 @@
 <template>
-  <button class="item_memo" @click="clickButton">
-    {{ label }}
-  </button>
+  <div class="cont_memo">
+    <button class="item_memo" @click="clickButton">
+      {{ label }}
+    </button>
+    <div class="cont_memo_btns">
+      <button type="button" class="btn_edit_memo" @click="clickEditBtn">수정</button>
+      <button type="button" class="btn_delete_memo" @click="clickDeleteBtn">삭제</button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -10,6 +16,12 @@ export default {
   methods: {
     clickButton() {
       this.$emit('componentClick');
+    },
+    clickEditBtn() {
+      this.$emit('editBtnClick');
+    },
+    clickDeleteBtn() {
+      this.$emit('deleteBtnClick');
     }
   }
 };
