@@ -17,8 +17,8 @@
           <p class="txt_duedate">{{ item.startDate }} ~ {{ item.endDate }}</p>
           <p class="txt_task">{{ item.task }}</p>
           <div class="cont_task_btns">
-            <button type="button" class="btn_edit_task">수정</button>
-            <button type="button" class="btn_delete_task" @click.prevent="() => deleteBlock(item.id)">삭제</button>
+            <button type="button" class="btn_edit_task" @click.prevent="() => readyToEditBlock(item)">수정</button>
+            <button type="button" class="btn_delete_task" @click.prevent="() => deleteBlock(item)">삭제</button>
           </div>
         </div>
       </div>
@@ -30,7 +30,8 @@
         <input type="date" class="input_startdate" v-model="startDateInput" placeholder="시작 날짜">      
         <input type="date" class="input_enddate" v-model="endDateInput" placeholder="종료 날짜">      
         <input type="text" class="input_task" v-model="taskInput" placeholder="업무 내용">      
-        <button type="button" class="btn_addtask" @click.prevent="() => addBlock()">등록 하기</button>
+        <button v-if="mode === 'add'" type="button" class="btn_taskbox btn_addtask" @click.prevent="() => addBlock()">등록 하기</button>
+        <button v-else type="button" class="btn_taskbox btn_edittask" @click.prevent="() => editBlock()">수정 하기</button>
       </div>
       <div class="cont_memobox">
         <h2 class="tit_memobox">MEMO</h2>
@@ -40,7 +41,7 @@
             :label="memo.label" v-bind:key="index"
             @componentClick="toggleMemoState(memo)"
             @editBtnClick="editMemo(index)"
-            @deleteBtnClick="deleteMemo(index)"
+            @deleteBtnClick="deleteMemo(memo)"
           />
         </div>
         <div class="cont_btntype">
@@ -71,7 +72,9 @@ export default {
     return {
       // 칸반
       statuses: ['backlog', 'todo', 'doing', 'done'],
+      mode: 'add',
       blocks: [],
+      editedId: -1,
       nameInput: '',
       startDateInput: '',
       endDateInput: '',
@@ -129,14 +132,15 @@ export default {
         status: 'todo',
       });
 
+      this.resetBlock();
+      this.saveStorage('blocks', this.blocks);
+    },
+    resetBlock() {
       this.nameInput = '',
       this.startDateInput = '',
       this.endDateInput = '',
       this.taskInput = ''
-
-      this.saveStorage('blocks', this.blocks);
     },
-
      updateBlockStatus: function (id, status) {
       this.blocks.find(b => b.id === Number(id)).status = status;
     },
@@ -148,20 +152,56 @@ export default {
       this.updateStorage(id, updatedBlock, 'blocks', this.blocks);
     },
 
-    deleteBlock: function(id) {
-      this.blocks.pop(this.blocks[id]);
+    editBlock: function() {
+      const currentEditedBlock = {
+        name: this.nameInput,
+        startDate: this.startDateInput,
+        endDate: this.endDateInput,
+        task: this.taskInput,
+        dDay: this.countdate(this.endDateInput)
+      };
+      this.blocks.some((block) => {
+        const isEditedBlock = block.id === this.editedId;
+        if(isEditedBlock) {
+          Object.assign(block, currentEditedBlock);
+        }
+        return isEditedBlock;
+      });
+      
+      this.resetBlock();
+      this.saveStorage('blocks', this.blocks);
+      this.editedId = -1;
+      this.mode = 'add';
+    },
+
+    readyToEditBlock:function(block) {
+      this.mode = 'edit';
+      const { id: editedId, name: nameInput, startDate: startDateInput, endDate: endDateInput, task: taskInput } = block;
+      Object.assign(this, { editedId, nameInput, startDateInput, endDateInput, taskInput });
+    },
+
+    onEditBlock: function(id) {
+      this.blocks[id].name = this.nameInput;
+      this.blocks[id].startDate = this.startDateInput;
+      this.blocks[id].endDate = this.endDateInput;
+      this.blocks[id].task = this.taskInput;
+      this.blocks[id].dDay = this.countdate(this.endDateInput);
+      // this.name === null;
+    },
+
+    deleteBlock: function(block) {
+      this.blocks.splice(block, 1);
       this.saveStorage('blocks', this.blocks);
     },
     
     // 메모
     addNewMemo() {
       this.memoList.push({
-        id: this.memoList.length,
-        label: this.memoInput,
-        state: 'active'
+          id: this.memoList.length,
+          label: this.memoInput,
+          state: 'active'
         });
       this.memoInput = '';
- 
       this.saveStorage('memoList', this.memoList);
     },
 
@@ -169,9 +209,8 @@ export default {
       console.log('개발중');
     },
 
-    deleteMemo(index) {
-      console.log(index);
-      this.memoList.pop(this.memoList[index]);
+    deleteMemo(memo) {
+      this.memoList.splice(memo, 1);
       this.saveStorage('memoList', this.memoList);
     },
 
@@ -193,7 +232,7 @@ export default {
     },
     updateStorage: function(id, item, key, data) {
       for(let i = 0; i < data.length; i++) {
-          if(i === id) {                    
+        if(i === id) {                    
           data[i] = item;
           break;
         }
