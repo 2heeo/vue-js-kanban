@@ -1,6 +1,6 @@
 <template>
   <div class="cont_memo">
-    <button class="item_memo" @click="clickButton">
+    <button class="item_memo" :class="{done: label != ''}" @click="clickButton">
       {{ label }}
     </button>
     <div class="cont_memo_btns">

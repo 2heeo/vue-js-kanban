@@ -1,24 +1,21 @@
 <template>
   <div class="cont_kanban">
     <ul class="list_kanban">
-      <li v-for="stage in stages" class="item_status" :class="{['item_status_' + stage]: true}" :key="stage">
+      <li v-for="stage in stages" class="item_kanban" :class="{['item_' + stage]: true}" :key="stage">
         <span class="tit_status">
           <slot :name="stage">
             <h2>{{ stage }}</h2>
           </slot>
         </span>
-        <div class="cont_item"></div>
         <ul class="wrap_item" ref="list" :data-status="stage">
-          <li class="item_task" v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
+          <li class="item_task" :class="{item_asap : block.status != 'done' && block.dDay != ''}" v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
+            {{typeof(block.dDay)}}
             <slot :name="block.id">
               <strong>{{ block.status }}</strong>
               <div>{{ block.id }}</div>
             </slot>
           </li>
         </ul>
-        <div class="btn_addblock">
-            <slot :name="`footer_${stage}`"></slot>
-        </div>
       </li>
     </ul>
   </div>
@@ -56,6 +53,7 @@ export default {
     updated() {
       this.drake.containers = this.$refs.list;
     },
+
     mounted() {
       this.drake = dragula(this.$refs.list)
         .on('drag', (el) => {
@@ -74,9 +72,9 @@ export default {
             window.setTimeout(() => {
               block.classList.remove('is_moved');
               this.$emit('updateBlock', block.dataset.blockId, list.dataset.status);
-            }, 600);
+            }, 100);
           }, 100);
         })
     }
-};
+	};
 </script>
