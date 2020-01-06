@@ -1,6 +1,6 @@
 <template>
   <div class="cont_memo">
-    <button class="item_memo" :class="{done: label != ''}" @click="clickButton">
+    <button class="item_memo" :class="{done: state === 'done'}" @click="clickButton">
       {{ label }}
     </button>
     <div class="cont_memo_btns">
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  props: ['label'],
+  props: ['label','state'],
   methods: {
     clickButton() {
       this.$emit('componentClick');

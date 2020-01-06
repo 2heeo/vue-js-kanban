@@ -9,7 +9,7 @@
         <input type="text" v-if="memoMode ==='add'" class="input_memo" v-model="memoInput" @keypress.enter="addNewMemo()" placeholder="메모 내용 입력">
         <input type="text" v-else class="input_memo" v-model="memoInput" @keypress.enter="editMemo()" placeholder="메모 내용 입력">
         <div class="list_memo">
-          <memo v-for="(memo, id) in activeMemoList" :label="memo.label" v-bind:key="id"
+          <memo v-for="(memo, id) in activeMemoList" :state="memo.state" :label="memo.label" v-bind:key="id"
             @componentClick="toggleMemoState(memo)"
             @editBtnClick="readyToEditMemo(memo)"
             @deleteBtnClick="deleteMemo(memo)"
@@ -17,9 +17,9 @@
         </div>
         <div class="cont_btntype">
           <span class="desc_btntype">보기 방식 : </span>
+          <button type="button" @click="changeCurrentState('all')" class="btn_viewtype" :class="{on:currentState === 'all'}">전체</button>
           <button type="button" @click="changeCurrentState('active')" class="btn_viewtype" :class="{on:currentState === 'active'}" >할 일</button>
           <button type="button" @click="changeCurrentState('done')" class="btn_viewtype" :class="{on:currentState === 'done'}">완료</button>
-          <button type="button" @click="changeCurrentState('all')" class="btn_viewtype" :class="{on:currentState === 'all'}">전체</button>
           <p class="desc_memo">* 클릭하면 완료/완료 취소 처리됨 *</p>
         </div>    
       </div>
@@ -92,7 +92,7 @@ export default {
       memoMode: 'add',
       editedMemoId: -1,
       memoList: [],
-      currentState: 'active',
+      currentState: 'all',
     };
   },
 
