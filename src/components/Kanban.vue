@@ -8,8 +8,9 @@
           </slot>
         </span>
         <ul class="wrap_item" ref="list" :data-status="stage">
-          <li class="item_task" :class="{item_asap : block.status != 'done' && block.dDay != ''}" v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
-            {{typeof(block.dDay)}}
+          <li class="item_task"
+            :class="{item_asap : block.dDay !== '' && (block.dDay === 0 || block.dDay > 0) && block.status !== 'done'}" 
+            v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
             <slot :name="block.id">
               <strong>{{ block.status }}</strong>
               <div>{{ block.id }}</div>

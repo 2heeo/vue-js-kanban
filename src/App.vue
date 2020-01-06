@@ -29,11 +29,17 @@
         </div>
         <div v-for="item in blocks" :slot="item.id" :key="item.id">
           <div class="cont_dday">
-            <span class="txt_dday" v-if="item.dDay !== ''">D</span><span class="txt_ddate">{{ item.dDay }}</span>
+            <span class="txt_dday" v-if="item.dDay !== ''">D</span>
+            <span class="txt_ddate" v-if="item.dDay === 0">-</span>
+            <span class="txt_ddate" v-if="item.dDay > 0">+</span>
+            <span class="txt_ddate">{{ item.dDay }}</span>
           </div>
           <div class="cont_text_item">
             <p class="txt_name">{{ item.name }}</p>
-            <p class="txt_duedate">{{ item.startDate }} ~ {{ item.endDate }}</p>
+            <p class="txt_duedate">{{ item.startDate }}
+              <span v-if="item.startDate !== null || item.endDate !== null">~</span>
+              {{ item.endDate }}
+            </p>
             <p class="txt_task">{{ item.task }}</p>
             <div class="cont_block_btns">
               <button type="button" class="btn_edit_block" @click.prevent="() => readyToEditBlock(item)">수정</button>
@@ -86,7 +92,7 @@ export default {
       memoMode: 'add',
       editedMemoId: -1,
       memoList: [],
-      currentState: 'all',
+      currentState: 'active',
     };
   },
 
@@ -121,18 +127,12 @@ export default {
       endDate = endDate === null ? null : new Date(endDate).getTime();
       let distance = endDate === null ? '' : Math.floor((nowDate - endDate)/(1000*60*60*24));
 
-      if(distance === 0) {
-        distance = `-${distance}`;
-      } else if(distance > 0) {
-        distance = `+${distance}`;
-      }
-
       return distance;
     },
 
     addBlock: function () {
       if(this.taskInput === null){
-        alert("메모를 입력합써!");
+        alert("업무 내용을 입력합써!");
       } else {
         this.blocks.push({
           id: this.blocks.length,
@@ -169,7 +169,7 @@ export default {
 
     readyToEditBlock: function(block) {
       this.mode = 'edit';
-      const { id: editedId, name: nameInput, startDate: startDateInput, endDate: endDateInput, task: taskInput } = block;
+      const { id: editedId, name: nameInput, startDate: startDateInput, endDate: endDateInput, task: taskInput } = block;      
       Object.assign(this, { editedId, nameInput, startDateInput, endDateInput, taskInput });
     },
 
@@ -181,7 +181,7 @@ export default {
         task: this.taskInput,
         dDay: this.countdate(this.endDateInput)
       };
-      
+            
       this.blocks.some((block) => {
         const isEditedBlock = block.id === this.editedId;
         if(isEditedBlock) {
@@ -190,10 +190,14 @@ export default {
         return isEditedBlock;
       });
       
-      this.resetBlock();
-      this.saveStorage('blocks', this.blocks);
-      this.editedId = -1;
-      this.mode = 'add';
+      if(this.taskInput === null) {
+        alert("업무 내용을 입력합써!");
+      } else {
+        this.resetBlock();
+        this.saveStorage('blocks', this.blocks);
+        this.editedId = -1;
+        this.mode = 'add';
+      }
     },
 
     deleteBlock: function(block) {
@@ -239,10 +243,14 @@ export default {
         return isEditedMemo;
       });
       
-      this.resetMemo();
-      this.saveStorage('memoList', this.memoList);
-      this.editedMemoId = -1;
-      this.memoMode = 'add';
+      if(this.memoInput === null) {
+        alert("메모를 입력합써!");
+      } else {
+        this.resetMemo();
+        this.saveStorage('memoList', this.memoList);
+        this.editedMemoId = -1;
+        this.memoMode = 'add';
+      }
     },
 
     deleteMemo(memo) {
