@@ -1,0 +1,112 @@
+/* reset css */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td,input,select,button{margin:0;padding:0}
+fieldset,img{border:0 none}
+dl,ul,ol,menu,li{list-style:none}
+blockquote, q{quotes:none}
+blockquote:before, blockquote:after,q:before, q:after{content:'';content:none}
+input,select,textarea,button{vertical-align:middle}
+input::-ms-clear{display:none}
+button{border:0 none;background-color:transparent;cursor:pointer}
+body{background:#fff}
+body,th,td,input,select,textarea,button{font-size:12px;line-height:1.5;font-family:'돋움',dotum,sans-serif;color:#333} /* color값은 디자인가이드에 맞게사용 */
+a{color:#333;text-decoration:none}
+a:active, a:hover{text-decoration:underline}
+a:active{background-color:transparent}
+address,caption,cite,code,dfn,em,var{font-style:normal;font-weight:normal}
+.screen_out{overflow:hidden;position:absolute;width:0;height:0;line-height:0;text-indent:-9999px}
+
+/* 공통 */
+html,body{height:100%}
+::placeholder{color:#fff;font-weight:bold}
+:-ms-input-placeholder{color:#fff;font-weight:bold} /* Internet Explorer 10-11 */
+::-ms-input-placeholder{color:#fff;font-weight:bold} /* Microsoft Edge */
+
+#kanbanApp{height:100%;background:#33363d}
+.done{text-decoration:line-through}
+.tit_board{height:7%;padding-top:25px;text-align:center;color:#fff}
+.cont_board{overflow:hidden;display:flex;height:93%;padding:0 20px 20px;box-sizing:border-box}
+
+
+/* memo */
+.cont_memobox{float:left;width:20%;height:100%;margin-right:15px;padding:13px;border:1px solid #dadada;box-sizing:border-box;color:#fff}
+.tit_memobox{padding:10px 0;text-align:center;font-size:20px}
+.input_memo{display:block;width:100%;height:40px;margin-bottom:60px;padding-left:10px;font-size:15px;border:1px solid #f4ce46;box-sizing:border-box}
+.list_memo{overflow:scroll;height:65%;padding:10px 5px;color:#fff;border-top:1px dashed #f4ce46;border-bottom:1px dashed #f4ce46}
+.cont_memo{overflow:hidden;position:relative;height:40px;margin-bottom:10px;padding:0 10px;border:1px solid #fff;box-sizing:border-box}
+.item_memo{display:block;width:80%;height:100%;text-align:left}
+.cont_memo .cont_memo_btns{display:none;position:absolute;right:3px;top:50%;margin-top:-14px}
+.cont_memo:hover .cont_memo_btns{display:block}
+.btn_edit_memo,.btn_delete_memo{padding:5px}
+.btn_edit_memo:hover{color:#fb7d44;font-weight:bold}
+.btn_delete_memo:hover{color:#ff6347;font-weight:bold}
+.cont_btntype{margin:20px 0;font-size:15px}
+.btn_viewtype{width:50px;height:50px;margin:5px;border:1px solid #fff;border-radius:50%;outline:none}
+.btn_viewtype.on{background:#fff;color:#333;font-weight:bold}
+.desc_memo{padding:15px 0}
+
+
+/* 칸반보드 */
+.cont_kanban{float:left;width:60%;height:100%;margin-right:15px;border-bottom:1px solid #dadada}
+.list_kanban{overflow:hidden;height:100%}
+.list_kanban li:first-child .wrap_item{border-left:1px solid #dadada}
+.list_kanban li:last-child .wrap_item{border-right:1px solid #dadada}
+.item_kanban {overflow:hidden;float:left;width:25%;height:100%}
+.tit_status{display:block;padding:10px 0}
+.tit_status h2{text-align:center;text-transform:uppercase;font-weight:bold}
+
+.wrap_item{overflow:scroll;height:100%;border-top:0 none;border-bottom:1px solid #dadada;border-right:1px dashed #dadada;box-sizing:border-box}
+.wrap_item > li:last-child{margin-bottom:50px}
+
+/* 블록 */
+.item_task{position:relative;height:200px;margin:12px;padding:15px 15px 15px;background:#fff;line-height:1.4}
+.item_task:after{position:absolute;bottom:-20px;left:0;right:20px;border:20px solid #fff;content:""}
+.item_task:before{position:absolute;bottom:-20px;right:0;border-width:20px 20px 0 0;border-style:solid;border-color:#dadada transparent;content:""}
+.item_task + .item_task{margin-top:40px}
+
+.cont_text_item p{overflow:hidden;width:100%;padding-bottom:2px;font-size:14px;word-break:break-all}
+.cont_dday{font-size:25px;text-align:right}
+.txt_dday{color:#ff6347}
+.txt_ddate{color:#000}
+.txt_name, .txt_duedate{text-overflow:ellipsis;white-space:nowrap}
+.cont_text_item .txt_task{display:block;display:-webkit-box;height:100px;font-size:20px;-webkit-box-orient:vertical;-webkit-line-clamp:3;max-height:3.5em;font-size:20px;line-height:1.2}
+
+.item_task:hover .cont_block_btns{display:block;}
+.item_task .cont_block_btns{display:none;position:absolute;left:15px;bottom:-10px;z-index:10}
+.btn_edit_block{margin-right:10px}
+.btn_edit_block:hover{color:#fb7d44;font-weight:bold}
+.btn_delete_block:hover{color:#ff6347;font-weight:bold}
+
+.item_backlog .tit_status, .item_backlog .is_moved{background:#f4ce46}
+.item_todo .tit_status, .item_todo .is_moved{background:#2a92bf}
+.item_doing .tit_status, .item_doing .is_moved{background:#fb7d44}
+.item_done .tit_status, .item_done .is_moved{background:#00b961}
+
+.item_backlog .is_moved:after{border-color:#f4ce46}
+.item_todo .is_moved:after{border-color:#2a92bf}
+.item_doing .is_moved:after{border-color:#fb7d44}
+.item_done .is_moved:after{border-color:#00b961}
+
+.item_asap{background:#fc413c;color:#fff;font-weight:bold}
+.item_asap:after{border-color:#fc413c}
+.item_asap:before{border-color:#ca0b06 transparent}
+.item_asap .txt_dday{color:#fff}
+.item_asap .txt_ddate{color:#f3ef02}
+.item_done .txt_task{text-decoration:line-through}
+.item_asap .btn_edit_block:hover{color:#f3ef02}
+.item_asap .btn_delete_block:hover{color:#f3ef02}
+
+/* 칸반 데이터 입력란 */
+.cont_rightbox{width:20%;}
+.cont_taskbox{padding:10px;border:1px solid #dadada;box-sizing:border-box}
+.tit_input{padding:10px 0;text-align:center;font-size:20px;color:#fff}
+.text_input_task{display:block;width:100%;margin-bottom:10px;padding:0 10px;height:40px;font-size:15px;font-weight:bold;color:#fff;border:1px solid #fff}
+.input_task{height:150px;padding-top:20px}
+.btn_taskbox{width:100%;padding:10px 0;background:#fff;text-align:center;font-size:16px;outline:none}
+.btn_addtask{color:#2a92bf}
+.btn_edittask{color:#fb7d44}
+
+/* Dragula CSS */
+.gu-mirror {position:fixed !important;margin:0 !important;z-index:9999 !important;opacity:0.8;list-style-type:none}
+.gu-hide {display:none !important}
+.gu-unselectable {-webkit-user-select:none !important;-moz-user-select:none !important;-ms-user-select:none !important;user-select:none !important}
+.gu-transit {opacity:0.2}
